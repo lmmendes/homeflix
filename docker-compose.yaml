@@ -1,0 +1,119 @@
+---
+version: "3.3"
+services:
+  transmission:
+    container_name: transmission
+    image: lscr.io/linuxserver/transmission:latest
+    restart: always
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    volumes:
+      - ${APPS_CONFIG_FOLDER}/transmission/config:/config
+      - ${STORAGE_FOLDER}/transmission/downloads:/downloads
+      - ${STORAGE_FOLDER}/transmission/watch:/watch
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=UTC
+  plex:
+    image: plexinc/pms-docker:1.24.4.5081-e362dc1ee
+    container_name: plex
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - VERSION=docker
+      - TZ=UTC
+      - PLEX_CLAIM=${PLEX_CLAIM}
+    volumes:
+      - ${APPS_CONFIG_FOLDER}/plex/config:/config
+      - ${STORAGE_FOLDER}/plex/transcode:/transcode
+      - ${STORAGE_FOLDER}/tv:/tv
+      - ${STORAGE_FOLDER}/movies:/movies
+    devices:
+      - /dev/dri:/dev/dri # Intel Hardware acceleration, see https://hub.docker.com/r/linuxserver/plex
+    ports:
+      - 32400:32400/tcp
+      - 3005:3005/tcp
+      - 8324:8324/tcp
+      - 32469:32469/tcp
+      - 1900:1900/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    restart: unless-stopped
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest # https://hub.docker.com/r/linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=UTC
+      - AUTO_UPDATE=true
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    volumes:
+      - ${APPS_CONFIG_FOLDER}/jackett/config:/config
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=UTC
+    volumes:
+      # https://wiki.servarr.com/docker-guide#consistent-and-well-planned-paths
+      - ${APPS_CONFIG_FOLDER}/radarr/config:/config
+      - ${STORAGE_FOLDER}/movies:/movies
+      - ${STORAGE_FOLDER}/transmission/downloads:/downloads/completed
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=UTC
+    volumes:
+      - ${APPS_CONFIG_FOLDER}/sonarr/config:/config
+      - ${STORAGE_FOLDER}/tv:/tv
+      - ${STORAGE_FOLDER}/transmission/downloads:/downloads/completed
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  overseerr:
+    image: sctx/overseerr:latest
+    container_name: overseerr
+    environment:
+      - LOG_LEVEL=info
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=UTC
+    ports:
+      - 5055:5055
+    volumes:
+      - ${APPS_CONFIG_FOLDER}/overseerr/config:/app/config
+    restart: unless-stopped
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    environment:
+      - TZ=UTC
+      - WATCHTOWER_CLEANUP=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+networks:
+  default:
+    driver: bridge
