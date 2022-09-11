@@ -16,8 +16,11 @@ A repository that setups' transmission, jackett, sonarr, radarr, overseerr and p
 
 ## Configuration `PUID` and `PGID`
 
+```bash
 > id $user
-> uid=501(mike) gid=20(staff) groups=20(staff),12(everyone)...
+uid=501(mike) gid=20(staff) groups=20(staff),12(everyone)...
+```
+
 
 Here we can see that `id $user` returned `uid=501(mike)` and `gid=20(staff) groups=20(staff)...`
 
