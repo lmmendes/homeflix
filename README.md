@@ -4,7 +4,7 @@ A repository that setups' transmission, jackett, sonarr, radarr, overseerr and p
 
 ## Installing
 
-1. Create `.env` file
+1. Create `.env` file to store the configuration and sensitive information.
 
 | VARIABLE           | TYPE    | Description                                            |
 |--------------------|---------|--------------------------------------------------------|
@@ -14,8 +14,28 @@ A repository that setups' transmission, jackett, sonarr, radarr, overseerr and p
 | APPS_CONFIG_FOLDER | String  | Local folder were the apps config files will be stored |
 | PLEX_CLAIM         | String  | Plex Claim Code, https://www.plex.tv/claim/            |
 
+## Configuration `PUID` and `PGID`
 
 > id $user
+> uid=501(mike) gid=20(staff) groups=20(staff),12(everyone)...
+
+Here we can see that `id $user` returned `uid=501(mike)` and `gid=20(staff) groups=20(staff)...`
+
+For the `PUID` use the number `501` from the `uid=501(mike)` and for `PGID` use any of the numbers from `gid=20(staff)` or `groups=20(staff)` for this let's use `20`.
+
+This means the the content on the `.env` file should look a bit like this:
+
+```bash
+PUID=501
+PGID=20
+```
+
+## Configuration `STORAGE_FOLDER`
+
+## Configuration `APPS_CONFIG_FOLDER`
+
+## Configuration `PLEX_CLAIM`
+
 
 ## App urls
 
