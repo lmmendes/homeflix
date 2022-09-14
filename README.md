@@ -1,6 +1,11 @@
+[jackett]: https://github.com/Jackett/Jackett
+[sonarr]: https://sonarr.tv
+[radarr]: https://radarr.video
+[overseerr]: https://overseerr.dev
+[plex]: https://www.plex.tv
 # Homeflix
 
-A repository that setups' transmission, jackett, sonarr, radarr, overseerr and plex for local viewing.
+A repository that setups' transmission, [jackett][jackett], [sonarr][sonarr], [radarr][radarr], [overseerr][overseerr] and [plex][plex] for local viewing.
 
 ## Installing
 
